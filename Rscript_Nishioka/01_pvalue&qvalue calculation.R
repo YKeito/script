@@ -1,6 +1,7 @@
 ####pvalue&qvalue calculate####
 ####"C:/Users/Matsnaga-21/Desktop/R script (nishioka)/"####
 
+
 ####read.table####
 ppm_Colvsrpt<- read.table("GRN_input/01_pqvalue_vsday0/200817iMO2d_vs0d.txt", sep = "\t", row.names = 1, header = T,quote = "")
 x<-ppm_Colvsrpt[,1:3]
@@ -9,7 +10,7 @@ y<-ppm_Colvsrpt[,4:6]
 #####pvalue calculate####
 n <- 1
 total <- nrow(ppm_Colvsrpt)
-p_ans <- c()      ###c()‚ÍƒxƒNƒgƒ‹
+p_ans <- c()      ###c()ï¿½Íƒxï¿½Nï¿½gï¿½ï¿½
 for(n in n:total){
   out1<-t.test(x[n, ],y[n, ], var.equal=T)
   #out1$p.value
@@ -25,7 +26,7 @@ p_ans[is.na(p_ans)]<-1
 q_ans<-p.adjust(p_ans,method="BH")
 
 
-####p value‚Æq value ƒf[ƒ^‚ÌŒ‹‡#####
+####p valueï¿½ï¿½q value ï¿½fï¿½[ï¿½^ï¿½ÌŒï¿½ï¿½ï¿½#####
 gene <- ppm_Colvsrpt[,0]
 pq_ans <- data.frame(gene,p_ans,q_ans)
 
