@@ -1,10 +1,10 @@
 #PCCcalculation#
-#02_DEGs (FDRcut).R‚Ì‘±‚«‚ÅŒvZ(PCC input data need only p value)#
+#02_DEGs (FDRcut).Rã®ç¶šãã§è¨ˆç®—(PCC input data need only p value)#
 
-####–¼Ì•ÏX####
+####åç§°å¤‰æ›´####
 allRNASeq <- subdata
 
-####isó‹µŠm”F—p####
+####é€²è¡ŒçŠ¶æ³ç¢ºèªç”¨####
 t <- proc.time()
 
 ####PCC calculation####
@@ -52,6 +52,10 @@ allRNASeq_foldchange_cytoscape <- data.frame(source_genes = source_genes,
                                              q_value = PCC_qvalue_all
 )
 
+####save####
+saveRDS(allRNASeq_foldchange_cytoscape, file = "200909(FDR0.01)PCC_CytoscapeFormat.rds")
+
+allRNASeq_foldchange_cytoscape0.05 <- readRDS("200909(FDR0.01)PCC_CytoscapeFormat.rds")
 
 ####PCC qvalue cut####
 
