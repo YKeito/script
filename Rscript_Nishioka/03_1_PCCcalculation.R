@@ -1,5 +1,29 @@
+#load package----
+library(tidyverse)
+library(Hmisc)
+#input base data----
+allRNASeq <- subdata %>% select(1:4)
+t <- proc.time()
+CY.Exp <- t(CY.Exp)
+base <- rcorr(as.matrix(CY.Exp), type = "pearson")
+temp <- combn(colnames(CY.Exp), 2)
+CY.PCC <- data.frame(source_genes = temp[1, ],
+                     interaction_value = base$r[lower.tri(base$r)],
+                     target_genes = temp[2, ],
+                     p_value = base$P[lower.tri(base$P)],
+                     q_value = p.adjust(base$P[lower.tri(base$P)], method = "BH"),
+                     stringsAsFactors = F
+)
+saveRDS(object = CY.PCC, file = "~/bigdata/yasue/CY151620Exp_CoEXPNet/RDS//CY151620PCC.rds")
+write.table(x = CY.PCC %>% select(-p_value) %>% filter(q_value < 5e-2),
+            file = "~/bigdata/yasue/CY151620Exp_CoEXPNet/Table/CY151620PCC_FDR5e-2.txt", sep = "\t", quote = F, row.names = F)
+#elapsed time----
+after <- proc.time()
+print(after - before)#175.43 sec
+
+"""
 #PCCcalculation#
-#02_DEGs (FDRcut).Rの続きで計算(PCC input data need only p value)#
+#02_DEGs (FDRcut).Rの続きで計�?(PCC input data need only p value)#
 
 ####名称変更####
 allRNASeq <- subdata
@@ -58,8 +82,8 @@ saveRDS(allRNASeq_foldchange_cytoscape, file = "200909(FDR0.01)PCC_CytoscapeForm
 allRNASeq_foldchange_cytoscape0.05 <- readRDS("200909(FDR0.01)PCC_CytoscapeFormat.rds")
 
 ####PCC qvalue cut####
-
 allRNASeq_cytoscape_th <- allRNASeq_foldchange_cytoscape[allRNASeq_foldchange_cytoscape$q_value < 0.05, ]
 allRNASeq_cytoscape_th_possitive <- allRNASeq_cytoscape_th[allRNASeq_cytoscape_th$interaction_value > 0, ]
 #write.table(allRNASeq_cytoscape_th, file = "GRN_output/03_PCC calculation/200827_0.05_coexptable.txt", append=F, quote = F, sep = "\t", row.names = F)
 write.table(allRNASeq_cytoscape_th_possitive, file = "GRN_output/03_PCC calculation/200827_0.05_coexptable_possitive.txt", append=F, quote = F, sep = "\t", row.names = F)
+"""
