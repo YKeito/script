@@ -4,7 +4,9 @@ library(tidyverse)
 T.filename <- list.files("~/IMO/RDS/", full.names = T)
 T.filename <- T.filename[grep("AME_results_FDR00", T.filename)]
 T.FDR <- T.filename %>% str_split(pattern = "_", simplify = T)
-T.FDR <- T.FDR[, 3]
+T.inflations <- T.FDR[, 4] %>% str_sub(end = nchar(T.FDR[, 4])-4)
+T.FDR <- paste0(T.FDR[, 3], "_", T.inflations)
+
 T.inflations <- c("inflations2.5", "inflations3.5", "inflations4.5")
 MotifList <- c("TTGAC", "GTCAA", "CACGTG", "GCCGCC", "GGCGGC", "ACGT", "CGT", "ACG", "CAACA", "TGTTG")
 names(MotifList) <- c("WRKY", "WRKY", "bHLH", "ERF", "ERF", "bZIP", "NAC", "NAC", "RAV", "RAV")
