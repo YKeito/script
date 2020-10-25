@@ -2,6 +2,7 @@
 library(tidyverse)
 #input data-----
 #FDR001----
+NodeTable <- read.table("~/IMO/base/DEG_FDR0.01/200916DEG_FDR0.01_PCC_FDR0.001_inflation2.5_iteration9_formastertable.csv", header=T, sep=",", stringsAsFactors = F)
 T.filename <- list.files("~/IMO/Table/AME_upstream500/DEG_FDR0.01/Motif/Results/", full.names = T)
 filename <- c()
 Motif_ID <- c()
@@ -39,8 +40,10 @@ AME_results <- data.frame(MCLNum = obnames,
 #bZIP:ACGT
 #NAC:CGT[G/T], ACG
 #RAV:CAACA
-MotifList <- c("TTGAC", "GTCAA", "CACGTG", "GCCGCC", "GGCGGC", "ACGT", "CGT", "ACG", "CAACA", "TGTTG")
-names(MotifList) <- c("WRKY", "WRKY", "bHLH", "ERF", "ERF", "bZIP", "NAC", "NAC", "RAV", "RAV")
+#Dof:AAAG
+#SBP:GTAC
+MotifList <- c("TTGAC", "GTCAA", "CACGTG", "GCCGCC", "GGCGGC", "ACGT", "CGT", "ACG", "CAACA", "TGTTG", "AAAG", "CTTT", "GTAC")
+names(MotifList) <- c("WRKY", "WRKY", "bHLH", "ERF", "ERF", "bZIP", "NAC", "NAC", "RAV", "RAV", "Dof", "Dof", "SBP")
 CoreMotif <- rep(0, times = nrow(AME_results))
 TF <- rep(0, times = nrow(AME_results))
 i <- 1
@@ -70,9 +73,13 @@ write.table(AME_results, file = "~/IMO/Table/AME_results_FDR001_inflations2.5.tx
 #FDR005----
 #input data-----
 T.inflations <- c("inflations2.5", "inflations3.5", "inflations4.5")
+FDR005.path <- list.files(path = "~/IMO/base/DEG_FDR0.05/")
 h <- 1
 for (h in h:length(T.inflations)) {
   T.filename <- list.files(paste0("~/IMO/Table/AME_upstream500/DEG_FDR0.05/", T.inflations[h], "/Motif/Results/"), full.names = T)
+  T.path <- list.files(path = paste0("~/IMO/base/DEG_FDR0.05/", FDR005.path[1]))
+  T.path <- T.path[grep("csv", T.path)]
+  NodeTable <- read.table(paste0("~/IMO/base/DEG_FDR0.05/", FDR005.path[1], "/", T.path), header=T, sep=",", stringsAsFactors = F)
   filename <- c()
   Motif_ID <- c()
   obnames <- c()
@@ -108,8 +115,10 @@ for (h in h:length(T.inflations)) {
   #bZIP:ACGT
   #NAC:CGT[G/T], ACG
   #RAV:CAACA
-  MotifList <- c("TTGAC", "GTCAA", "CACGTG", "GCCGCC", "GGCGGC", "ACGT", "CGT", "ACG", "CAACA", "TGTTG")
-  names(MotifList) <- c("WRKY", "WRKY", "bHLH", "ERF", "ERF", "bZIP", "NAC", "NAC", "RAV", "RAV")
+  #Dof:AAAG
+  #SBP:GTAC
+  MotifList <- c("TTGAC", "GTCAA", "CACGTG", "GCCGCC", "GGCGGC", "ACGT", "CGT", "ACG", "CAACA", "TGTTG", "AAAG", "CTTT", "GTAC")
+  names(MotifList) <- c("WRKY", "WRKY", "bHLH", "ERF", "ERF", "bZIP", "NAC", "NAC", "RAV", "RAV", "Dof", "Dof", "SBP")
   CoreMotif <- rep(0, times = nrow(AME_results))
   TF <- rep(0, times = nrow(AME_results))
   i <- 1

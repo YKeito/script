@@ -8,8 +8,8 @@ T.inflations <- T.FDR[, 4] %>% str_sub(end = nchar(T.FDR[, 4])-4)
 T.FDR <- paste0(T.FDR[, 3], "_", T.inflations)
 
 T.inflations <- c("inflations2.5", "inflations3.5", "inflations4.5")
-MotifList <- c("TTGAC", "GTCAA", "CACGTG", "GCCGCC", "GGCGGC", "ACGT", "CGT", "ACG", "CAACA", "TGTTG")
-names(MotifList) <- c("WRKY", "WRKY", "bHLH", "ERF", "ERF", "bZIP", "NAC", "NAC", "RAV", "RAV")
+MotifList <- c("TTGAC", "GTCAA", "CACGTG", "GCCGCC", "GGCGGC", "ACGT", "CGT", "ACG", "CAACA", "TGTTG", "AAAG", "CTTT", "GTAC")
+names(MotifList) <- c("WRKY", "WRKY", "bHLH", "ERF", "ERF", "bZIP", "NAC", "NAC", "RAV", "RAV", "Dof", "Dof", "SBP")
 
 i <- 1
 for (i in i:length(T.filename)) {
