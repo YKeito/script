@@ -3,7 +3,7 @@ library(tidyverse)
 #input data----
 #各MCLNumのAGIの配列をクラスター単位で引っこ抜く----
 up_500bp <- readRDS(file = "~/IMO/RDS/TAIR10_upstream_500_20101028.rds")
-NodeTable <- read.table("~/IMO/base/DEG_FDR0.05/inflation2.5(defalt)/200916DEG_FDR0.05_PCC_FDR0.0001_inflation2.5_iteration8_formastertable.csv", header=T, sep=",", stringsAsFactors = F)
+NodeTable <- read.table("~/IMO/base/DEG_FDR0.05/inflation4.5/200916DEG_FDR0.05_PCC_FDR0.0001_inflation4.5_iteration10_formastertable.csv", header=T, sep=",", stringsAsFactors = F)
 T.MCLNum <- NodeTable$X__mclCluster %>% unique()
 T.MCLNum <- T.MCLNum[!is.na(T.MCLNum)]
 i <- 1
@@ -41,8 +41,8 @@ for(i in i:length(T.MCLNum)){
     cont_allfasta <- c(cont_allfasta, rbind(control_fastaAGI, cont_fasta))
     o <- o+1
   }
-  target <- paste0("~/IMO/Table/DEG_FDR0.05/inflations2.5/Motif/MultiFasta/Target/", "MCLNum", T.MCLNum[i], "_upstream500.fasta")
-  control <- paste0("~/IMO/Table/DEG_FDR0.05/inflations2.5/Motif/MultiFasta/Control/", "control_MCLNum", T.MCLNum[i], "_upstream500.fasta")
+  target <- paste0("~/IMO/Table/DEG_FDR0.05/inflations4.5/Motif/MultiFasta/Target/", "MCLNum", T.MCLNum[i], "_upstream500.fasta")
+  control <- paste0("~/IMO/Table/DEG_FDR0.05/inflations4.5/Motif/MultiFasta/Control/", "control_MCLNum", T.MCLNum[i], "_upstream500.fasta")
   write.table(allfasta, file = target, append = F, quote = F, sep = "\t", row.names = F, col.names = F)
   write.table(cont_allfasta, file = control, append = F, quote = F, sep = "\t", row.names = F, col.names = F)
   print(i)
