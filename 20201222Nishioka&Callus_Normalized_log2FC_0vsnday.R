@@ -2,20 +2,55 @@
 library(tidyverse)
 #Input published data & formatting data----
 DEGs.Ave <- read.table("~/IMO/base/20201217_Aveppm_DEGs.txt", sep = "\t", header = T, quote = "")
+DEGs.Ave <- DEGs.Ave %>% select(-annotation)
+colnames(DEGs.Ave) <- c("AGI", "Col_0d", "Col_2d", "Col_4d", "Col_7d", "Col_10d",
+                      "rpt5a_0d", "rpt5a_2d", "rpt5a_4d", "rpt5a_7d", "rpt5a_10d"
+                      )
 callus.data <- read.table(file = "~/IMO/PublishedData/RNA-Seq_callus.txt", sep = "\t", header = T, stringsAsFactors = F)
 callus.data <- callus.data %>% filter(X %in% DEGs.Ave$AGI)
+colnames(callus.data)[1] <- "AGI"
 #Convert expression data to Zscore
 T.colnames <- DEGs.Ave %>% colnames()
 T.colnames <- T.colnames[c(-1, -12)]
+T.colnames <- T.colnames[grep(pattern = "Col", T.colnames)]
 total <- T.colnames %>% length()
-Normalized.Noshioka.data <- data.frame(AGI = DEGs.Ave$AGI,
+Normalized.Col.data <- data.frame(AGI = DEGs.Ave$AGI,
                                        stringsAsFactors = F)
-j <- 1
+j <- 2
 for (j in j:total) {
-  Normalized.Noshioka.data <- cbind(Normalized.Noshioka.data, 
-                                    DEGs.Ave %>% 
-                                      select(starts_with(T.colnames[j])) %>% 
-                                      scale()
+  bunshi <- DEGs.Ave %>% 
+    select(T.colnames[j])
+  bunshi <- bunshi+0.001
+  bunbo <- DEGs.Ave %>% 
+    select(T.colnames[1])
+  bunbo <- bunbo+0.001
+  ratio <- bunshi/bunbo
+  ratio <- log2(ratio)
+  ratio <- scale(ratio)
+  Normalized.Col.data <- cbind(Normalized.Col.data, 
+                               ratio
+  )
+  j <- j+1
+}
+T.colnames <- DEGs.Ave %>% colnames()
+T.colnames <- T.colnames[c(-1, -12)]
+T.colnames <- T.colnames[grep(pattern = "rpt", T.colnames)]
+total <- T.colnames %>% length()
+Normalized.rpt5a.data <- data.frame(AGI = DEGs.Ave$AGI,
+                                  stringsAsFactors = F)
+j <- 2
+for (j in j:total) {
+  bunshi <- DEGs.Ave %>% 
+    select(T.colnames[j])
+  bunshi <- bunshi+0.001
+  bunbo <- DEGs.Ave %>% 
+    select(T.colnames[1])
+  bunbo <- bunbo+0.001
+  ratio <- bunshi/bunbo
+  ratio <- log2(ratio)
+  ratio <- scale(ratio)
+  Normalized.rpt5a.data <- cbind(Normalized.rpt5a.data, 
+                               ratio
   )
   j <- j+1
 }
@@ -24,25 +59,32 @@ T.colnames <- callus.data %>% colnames() %>% str_sub(end = -3)
 T.colnames <- T.colnames %>% unique()
 T.colnames <- T.colnames[-1]
 total <- T.colnames %>% length()
-Normalized.callus.data <- data.frame(AGI = callus.data$X,
+Normalized.callus.data <- data.frame(AGI = callus.data$AGI,
                                      stringsAsFactors = F)
 j <- 1
 for (j in j:total) {
   Normalized.callus.data <- cbind(Normalized.callus.data, 
                                   callus.data %>% 
                                     select(starts_with(T.colnames[j])) %>% 
-                                    apply(MARGIN = 1, FUN = mean) %>% 
-                                    scale()
+                                    apply(MARGIN = 1, FUN = mean)
   )
   j <- j+1
 }
 colnames(Normalized.callus.data)[2:ncol(Normalized.callus.data)] <- T.colnames
+bunshi <- Normalized.callus.data$Col_C14 + 0.001
+bunbo <- Normalized.callus.data$Col_C0 + 0.001
+ratio <- bunshi/bunbo
+ratio <- log2(ratio)
+ratio <- scale(ratio)
+
+Normalized.callus.data <- data.frame(AGI = Normalized.callus.data$AGI,
+                                     callus_14d = ratio,
+                                     stringsAsFactors = F)
+
 #processing data----
-T.data <- Normalized.Noshioka.data %>% 
+T.data <- Normalized.Col.data %>% 
+  left_join(y = Normalized.rpt5a.data, by = "AGI") %>% 
   left_join(y = Normalized.callus.data, by = "AGI")
-colnames(T.data) <- c("AGI", "Col_0d", "Col_2d", "Col_4d", "Col_7d", "Col_10d",
-                      "rpt5a_0d", "rpt5a_2d", "rpt5a_4d", "rpt5a_7d", "rpt5a_10d",
-                      "Col_C0", "callus_C14")
 #PCA mean ver----
 PCA.data <- T.data %>% select(-AGI)
 PCA.data <- PCA.data %>% na.omit()
@@ -66,7 +108,7 @@ g <- g + xlab(paste0("PC1 (", formatC(T.component[1]*100, width = 3), "%)"))
 g <- g + ylab(paste0("PC2 (", formatC(T.component[2]*100, width = 3), "%)"))
 g <- g + theme(axis.text = element_text(size=18))
 g <- g + theme(axis.title = element_text(size=18))
-ggsave(filename = "~/IMO/Image/PCA/20201217Nishioka&Callus_Normalized_Aveppm_PCA.png", plot = g, width = 9, height = 7)
+ggsave(filename = "~/IMO/Image/PCA/20201222Nishioka&Callus_Normalized_log2FC_0vsnday_PCA.png", plot = g, width = 9, height = 7)
 #heatmap----
 df <- T.data %>% gather(key = "Sample", value = Exp, -AGI)
 df$Exp <- as.numeric(df$Exp)
@@ -97,4 +139,4 @@ g <- g + theme(legend.text = element_text(size=12))
 g <- g + theme(axis.text.x = element_text(size=24))
 g <- g + theme(axis.text.y = element_blank())
 g <- g + theme(axis.text.x = element_text(angle = 90, hjust = 1))
-ggsave(filename = "~/IMO/Image/Heatmap/20201217Nishioka&Callus_Normalized_Aveppm_heatmap.png", plot = g, width = 12, height = 18)
+ggsave(filename = "~/IMO/Image/Heatmap/20201222Nishioka&Callus_Normalized_log2FC_0vsnday_heatmap.png", plot = g, width = 12, height = 18)

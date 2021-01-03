@@ -7,7 +7,6 @@ library(ggplot2)
 library(ggrepel)
 library(stringr)
 library(tidyverse)
-library(gplots)
 library(factoextra)
 #Input published data & formatting data----
 Nishioka.data <- read.table(file = "~/nishioka/base/20200317_log2FC&FDR.txt", sep = "\t", header = T, stringsAsFactors = F)
@@ -53,8 +52,8 @@ df$Sample <- factor(x = df$Sample,
 g <- ggplot(df, aes(x = Sample, y = value, fill = Group))
 g <- g + geom_bar(stat = "identity")
 g <- g + theme_bw()
-g <- g + theme(axis.title.x = element_blank(), axis.title.y = element_blank()) #Ž²–¼Á‚·
-g <- g + theme(legend.position = 'none') #–}—áÁ‚·
+g <- g + theme(axis.title.x = element_blank(), axis.title.y = element_blank()) #?????Á‚?
+g <- g + theme(legend.position = 'none') #?}???Á‚?
 g <- g + theme(axis.text = element_text(size = 18))
 plot(g)
 ggsave(filename = "~/nishioka/Image/DEGs_Graph/NumDEGs_vs0_BarGraph.png", plot = g, width = 8, height = 6)
@@ -245,31 +244,4 @@ g <- g + theme(axis.text.x = element_text(size=24))
 g <- g + theme(axis.text.y = element_blank())
 g <- g + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ggsave(filename = "~/nishioka/Image/Heatmap/Normalized_log2FC_Zscore_Heatmap.png", plot = g, width = 12, height = 18)
-#plotting dendrogram----
-#Hclust; annotation
-res.hc <- eclust(x = t(T.matrix),
-                 "hclust",
-                 k = 3,
-                 method = "euclidean",
-                 graph = FALSE
-)
-#Dendrogram----
-#annotation
-g <- fviz_dend(res.hc,
-               cex = 0.5,
-               color_labels_by_k = TRUE,
-               show_labels = TRUE,
-               ggtheme = theme_classic(),
-               horiz = FALSE,
-               #rect = TRUE,
-               rect_fill = TRUE,
-               type = "rectangle",
-               main = NULL
-)
-g <- g + theme(axis.text=element_text(size=20))
-g <- g + theme(axis.title.x = element_blank(), axis.title.y = element_blank())
-T.HCL <- data.frame(annotation = names(res.hc$cluster),
-                    Hcluster = res.hc$cluster,
-                    order = res.hc$order,
-                    row.names = NULL)
-ggsave(filename = "~/nishioka/Image/Dendrogram/NishiokaSample_Dendrogram.png")
+#plotti

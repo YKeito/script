@@ -1,6 +1,5 @@
 library(tidyverse)
 library(gplots)
-
 Nishioka.data <- read.table("~/IMO/base/20201217_log2FC.txt", sep = "\t", header = T, quote = "")
 Nishioka.data <- Nishioka.data %>% select(-contains("pvalue"))
 T.names <- c("2d", "4d", "7d", "10d")
